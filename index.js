@@ -66,17 +66,17 @@ app.get('/api/hello', function(req, res) {
 
 app.post("/api/shorturl",function(req, res){
 
-let urlObj = new URL(req.body.url);
-// try{
-//   urlObj = new URL(req.body.url2);
-//
-//
-// }catch(error){
-//
-//   res.json({ error: 'invalid url' });
-//   return;
-//
-// }
+let urlObj;
+try{
+  urlObj = new URL(req.body.url2);
+
+
+}catch(error){
+
+  res.json({ error: 'invalid url' });
+  return;
+
+}
 
 
 
