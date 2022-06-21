@@ -5,8 +5,9 @@ const app = express();
 const dns = require('dns');
 const bodyParser = require('body-parser');
 // Basic Configuration
+
 const port = process.env.PORT || 3000;
-const shortid = require('shortid');
+
 let mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
