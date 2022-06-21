@@ -164,12 +164,13 @@ let newShortie;
 
 
 app.get("/api/shorturl/:shortparam",function(req, res){
-  let shorturl = req.params.shortparam;
+  let shortp = req.params.shortparam;
 
-  Shortie.findOne({short_url: shorturl},function(err,data){
+  Shortie.findOne({short_url: shortp},function(err,data){
     if(err) return console.log(err);
     if(data){
-      res.redirect(data.originalUrl);
+
+      res.redirect(data.original_url);
     }
 
 
