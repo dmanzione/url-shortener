@@ -66,17 +66,17 @@ app.get('/api/hello', function(req, res) {
 
 app.post("/api/shorturl",function(req, res){
 
-let urlObj;
-try{
-  urlObj = new URL(req.body.url2);
-
-
-}catch(error){
-
-  res.json({ error: 'invalid url' });
-  return;
-
-}
+let urlObj = new URL(req.body.url);
+// try{
+//   urlObj = new URL(req.body.url2);
+//
+//
+// }catch(error){
+//
+//   res.json({ error: 'invalid url' });
+//   return;
+//
+// }
 
 
 
@@ -84,80 +84,87 @@ try{
 
     if(err){
       res.json({ error: 'invalid url' });
-      return;
 
-    }
-
-
-
-
-
-
-
-  });
-
-let newShortie;
-  Shortie.findOne({original_url:req.body.url2},function(err, data){
-    if(err) return console.log(err);
-
-    if(data){
-      let urls = {
-        original_url:req.body.url2,
-        short_url:data.short_url
-      };
-      res.json(urls);
 
     }else {
 
-      let s = Math.floor(Math.random()*10000);
+      let newShortie;
+        Shortie.findOne({original_url:req.body.url2},function(err, data){
+          if(err) return console.log(err);
+
+          if(data){
+            let urls = {
+              original_url:req.body.url,
+              short_url:data.short_url
+            };
+            res.json({
+              original_url:req.body.url,
+              short_url:data.short_url
+            });
+
+          }else {
+
+            let s = Math.floor(Math.random()*10000).toString();
 
 
-      newShortie = new Shortie({
-        original_url:req.body.url2,
-        short_url: s
-      });
-      newShortie.save(function(err3, data3){
-        if(err3)return console.log(err3);
-      });
+            newShortie = new Shortie({
+              original_url:req.body.url,
+              short_url: s
+            });
+            newShortie.save(function(err3, data3){
+              if(err3)return console.log(err3);
+            });
 
-      let urls ={
-          original_url:req.body.url2,
-          short_url:s
-        };
-      res.json(  urls
-      );
-      // Shorts.find(function(err2, data2){
-      //
-      //   if(err2) return console.log(data2);
-      //   let set = data2.set;
-      //
-      //   let s = Math.floor(Math.random()*10000);
-      //   while(set.includes(s)){
-      //     s = Math.floor(Math.random()*10000);
-      //   }
-      //
-      //   newShortie = new Shortie({
-      //     original_url:req.body.url2,
-      //     short_url: s
-      //   });
-      //   newShortie.save(function(err3, data3){
-      //     if(err3)return console.log(err3);
-      //   });
-      //   res.json(  {
-      //       original_url:req.body.url2,
-      //       short_url:s
-      //     }
-      //   );
-      //
-      //
-      //
-      //
-      // });
+            let urls ={
+                original_url:req.body.url,
+                short_url:s
+              };
+            res.json(  urls
+            );
+            // Shorts.find(function(err2, data2){
+            //
+            //   if(err2) return console.log(data2);
+            //   let set = data2.set;
+            //
+            //   let s = Math.floor(Math.random()*10000);
+            //   while(set.includes(s)){
+            //     s = Math.floor(Math.random()*10000);
+            //   }
+            //
+            //   newShortie = new Shortie({
+            //     original_url:req.body.url2,
+            //     short_url: s
+            //   });
+            //   newShortie.save(function(err3, data3){
+            //     if(err3)return console.log(err3);
+            //   });
+            //   res.json(  {
+            //       original_url:req.body.url2,
+            //       short_url:s
+            //     }
+            //   );
+            //
+            //
+            //
+            //
+            // });
 
 
+
+          }
+        });
 
     }
+
+
+
+
+
+
+
   });
+
+
 });
 
 
@@ -165,6 +172,7 @@ let newShortie;
 
 app.get("/api/shorturl/:shortparam",function(req, res){
   let shortp = req.params.shortparam;
+
 
   Shortie.findOne({short_url: shortp},function(err,data){
     if(err) return console.log(err);
