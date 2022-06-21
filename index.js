@@ -68,7 +68,7 @@ app.post("/api/shorturl",function(req, res){
 
 let urlObj;
 try{
-  urlObj = new URL(req.body.url2);
+  urlObj = new URL(req.body.url);
 
 
 }catch(error){
@@ -80,7 +80,7 @@ try{
 
 
 
-  dns.lookup(urlObj.hostname, function(err, family, addresses){
+  dns.lookup(req.body.url, function(err, family, addresses){
 
     if(err){
       res.json({ error: 'invalid url' });
@@ -89,26 +89,26 @@ try{
     }else {
 
       let newShortie;
-        Shortie.findOne({original_url:req.body.url2},function(err, data){
-          if(err) return console.log(err);
-
-          if(data){
-            let urls = {
-              original_url:req.body.url2,
-              short_url:data.short_url
-            };
-            res.json({
-              original_url:req.body.url2,
-              short_url:data.short_url
-            });
-
-          }else {
+        // Shortie.findOne({original_url:req.body.url},function(err, data){
+        //   if(err) return console.log(err);
+        //
+        //   if(data){
+        //     let urls = {
+        //       original_url:req.body.url,
+        //       short_url:data.short_url
+        //     };
+        //     res.json({
+        //       original_url:req.body.url,
+        //       short_url:data.short_url
+        //     });
+        //
+        //   }else {
 
             let s = Math.floor(Math.random()*10000).toString();
 
 
             newShortie = new Shortie({
-              original_url:req.body.url2,
+              original_url:req.body.url,
               short_url: s
             });
             newShortie.save(function(err3, data3){
@@ -116,7 +116,7 @@ try{
             });
 
             let urls ={
-                original_url:req.body.url2,
+                original_url:req.body.url,
                 short_url:s
               };
             res.json(  urls
@@ -132,14 +132,14 @@ try{
             //   }
             //
             //   newShortie = new Shortie({
-            //     original_url:req.body.url2,
+            //     original_url:req.body.url,
             //     short_url: s
             //   });
             //   newShortie.save(function(err3, data3){
             //     if(err3)return console.log(err3);
             //   });
             //   res.json(  {
-            //       original_url:req.body.url2,
+            //       original_url:req.body.url,
             //       short_url:s
             //     }
             //   );
@@ -152,18 +152,18 @@ try{
 
 
           }
-        });
+        // });
 
-    }
-
-
-
-
-
-
-
-  });
-
+  //   }
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // });
+});
 
 });
 
