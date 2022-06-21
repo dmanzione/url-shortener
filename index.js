@@ -15,6 +15,7 @@ mongoose.connect('mongodb+srv://dmanzione:12345-@freecodecamp.plgn94j.mongodb.ne
 
 app.use(cors());
 
+app.use(bodyParser.urlencoded({ extended: true }));
 let shortieSchema = new mongoose.Schema(
   {
     original_url: {
@@ -79,13 +80,15 @@ try{
 
 
 
-  dns.lookup(req.body.url2, function(err, family, addresses){
+  dns.lookup(urlObj.hostname, function(err, family, addresses){
 
     if(err){
       res.json({ error: 'invalid url' });
       return;
 
     }
+
+
 
 
 
@@ -102,8 +105,8 @@ let newShortie;
         original_url:req.body.url2,
         short_url:data.short_url
       };
-
       res.json(urls);
+
     }else {
 
       let s = Math.floor(Math.random()*10000);
