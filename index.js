@@ -89,20 +89,20 @@ try{
     }else {
 
       let newShortie;
-        // Shortie.findOne({original_url:req.body.url},function(err, data){
-        //   if(err) return console.log(err);
-        //
-        //   if(data){
-        //     let urls = {
-        //       original_url:req.body.url,
-        //       short_url:data.short_url
-        //     };
-        //     res.json({
-        //       original_url:req.body.url,
-        //       short_url:data.short_url
-        //     });
-        //
-        //   }else {
+        Shortie.findOne({original_url:req.body.url},function(err, data){
+          if(err) return console.log(err);
+
+          if(data){
+            let urls = {
+              original_url:req.body.url,
+              short_url:data.short_url
+            };
+            res.json({
+              original_url:req.body.url,
+              short_url:data.short_url
+            });
+
+          }else {
 
             let s = Math.floor(Math.random()*10000).toString();
 
@@ -152,6 +152,7 @@ try{
 
 
           }
+        });
         // });
 
   //   }
@@ -163,11 +164,11 @@ try{
   //
   //
   // });
-});
+};
 
 });
 
-
+});
 
 
 app.get("/api/shorturl/:shortparam",function(req, res){
@@ -199,7 +200,7 @@ app.get("/api/shorturls", function(req, res){
   })
 
 
-})
+});
 
 
 
