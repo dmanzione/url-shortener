@@ -94,11 +94,11 @@ try{
 
           if(data){
             let urls = {
-              original_url:req.body.url,
+              original_url:req.body.url2,
               short_url:data.short_url
             };
             res.json({
-              original_url:req.body.url,
+              original_url:req.body.url2,
               short_url:data.short_url
             });
 
@@ -108,7 +108,7 @@ try{
 
 
             newShortie = new Shortie({
-              original_url:req.body.url,
+              original_url:req.body.url2,
               short_url: s
             });
             newShortie.save(function(err3, data3){
@@ -116,7 +116,7 @@ try{
             });
 
             let urls ={
-                original_url:req.body.url,
+                original_url:req.body.url2,
                 short_url:s
               };
             res.json(  urls
