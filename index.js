@@ -7,10 +7,10 @@ const bodyParser = require('body-parser');
 // Basic Configuration
 const port = process.env.PORT || 3000;
 const shortid = require('shortid');
-const mongoose = require("mongoose");
-var url = require('url');
+let mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
+
 
 app.use(cors());
 
