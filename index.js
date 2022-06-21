@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 
 let mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGO_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGO_URI.toString(),{ useNewUrlParser: true, useUnifiedTopology: true });
 
 
 app.use(cors());
