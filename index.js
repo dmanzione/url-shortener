@@ -8,24 +8,39 @@ const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
 const shortid = require('shortid');
 const mongoose = require("mongoose");
+var url = require('url');
+
 mongoose.connect(process.env.MONGO_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(cors());
 
 let shortieSchema = new mongoose.Schema(
   {
-    originalUrl: {
+    original_url: {
 			type: String,
 			required:true
 			},
-    shortUrl:{
+    short_url:{
       type:String
     }
   }
 );
 
-let Shortie = mongoose.model('Shortie',shortieSchema);
+let shortsSchema = new mongoose.Schema(
+{
+  set: [Number]
+}
 
+);
+
+
+let Shortie = mongoose.model('Shortie',shortieSchema);
+let Shorts = mongoose.model('Shorts',shortsSchema);
+
+let collectionOfUrls = new Shorts({
+  set: []
+}
+);
 
 
 
@@ -35,6 +50,13 @@ app.get('/', function(req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
+
+app.get('/api/clean',function(req, res) {
+  Shortie.deleteMany(function(err, data){
+    if(err) return console.log(err);
+  });
+});
+
 // Your first API endpoint
 app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
@@ -42,60 +64,129 @@ app.get('/api/hello', function(req, res) {
 
 app.post("/api/shorturl",function(req, res){
 
+let urlObj;
+try{
+  urlObj = new URL(req.body.url2);
 
 
-  dns.lookup(req.hostname, function(err, family, addresses){
+}catch(error){
+
+  res.json({ error: 'invalid url' });
+  return;
+
+}
+
+
+
+  dns.lookup(req.body.url2, function(err, family, addresses){
+
     if(err){
-      let urls = { error: 'invalid url' };
-      res.json(urls);
+      res.json({ error: 'invalid url' });
       return;
+
     }
 
 
 
-  });
-  let s = shortid.generate();
-
-
-  let newShortie = new Shortie({
-    originalUrl:req.body.url,
-    shortUrl: s
-  });
-
-  newShortie.save(function(err, data){
-    if(err)return console.log(err);
-
-
 
 
   });
 
-
-
-   let urls =  {
-     "original_url":req.body.url,
-     "short_url":s
-   }
-s
-
-   res.json(urls);
-
-});
-
-app.get("/api/shorturl/:shortparam",function(req, res){
-  let shortUrl = req.params.shortparam;
-
-  Shortie.findOne({"short_url":
-      shortUrl
-  },function(err,data){
+let newShortie;
+  Shortie.findOne({original_url:req.body.url2},function(err, data){
     if(err) return console.log(err);
 
-    res.redirect(data.originalUrl);
+    if(data){
+      let urls = {
+        original_url:req.body.url2,
+        short_url:data.short_url
+      };
+
+      res.json(urls);
+    }else {
+
+      let s = Math.floor(Math.random()*10000);
+
+
+      newShortie = new Shortie({
+        original_url:req.body.url2,
+        short_url: s
+      });
+      newShortie.save(function(err3, data3){
+        if(err3)return console.log(err3);
+      });
+
+      let urls ={
+          original_url:req.body.url2,
+          short_url:s
+        };
+      res.json(  urls
+      );
+      // Shorts.find(function(err2, data2){
+      //
+      //   if(err2) return console.log(data2);
+      //   let set = data2.set;
+      //
+      //   let s = Math.floor(Math.random()*10000);
+      //   while(set.includes(s)){
+      //     s = Math.floor(Math.random()*10000);
+      //   }
+      //
+      //   newShortie = new Shortie({
+      //     original_url:req.body.url2,
+      //     short_url: s
+      //   });
+      //   newShortie.save(function(err3, data3){
+      //     if(err3)return console.log(err3);
+      //   });
+      //   res.json(  {
+      //       original_url:req.body.url2,
+      //       short_url:s
+      //     }
+      //   );
+      //
+      //
+      //
+      //
+      // });
+
+
+
+    }
+  });
+});
+
+
+
+
+app.get("/api/shorturl/:shortparam",function(req, res){
+  let shorturl = req.params.shortparam;
+
+  Shortie.findOne({short_url: shorturl},function(err,data){
+    if(err) return console.log(err);
+    if(data){
+      res.redirect(data.originalUrl);
+    }
+
 
 	});
-  
 
 });
+
+
+
+app.get("/api/shorturls", function(req, res){
+  let arr = [];
+  Shortie.find(function(err, data){
+    if(err)return console.log(data)
+    for(let i = 0;i<data.length;i++){
+      arr[i] = data[i];
+    }
+    res.send(data)
+  })
+
+
+})
 
 
 
